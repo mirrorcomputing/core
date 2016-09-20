@@ -13,8 +13,7 @@ func TestOuterid_Marshal(t *testing.T) {
 		Addr: "127.0.0.1:93",
 	}
 	bs := oid.Marshal()
-	fmt.Println(len(bs))
-	fmt.Println(bs)
-	newoid, err := oid.Unmarshal(bs[:19])
-	fmt.Println(err, newoid.String())
+
+	newoid, _ := oid.Unmarshal(bs)
+	fmt.Println(newoid.String())
 }

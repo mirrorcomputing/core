@@ -1,8 +1,7 @@
 package core
 
 import (
-	"fmt"
-	"strings"
+	"github.com/mirrorcomputing/core/bytes"
 	"time"
 )
 
@@ -20,10 +19,12 @@ type Outerid struct {
 }
 
 func (this Outerid) Unmarshal(bs []byte) (self *Outerid, err error) {
-	t := strings.TrimSpace(string(bs[:30]))
-	fmt.Println(t)
-	self.Time, err = time.Parse("2009-11-10 23:00:00", t)
-	self.Addr = string(bs[30:])
+	self = &Outerid{}
+	t := string(bytes.Trim0(bs[:30]))
+
+	withNanos := "2006-01-02 15:04:05"
+	self.Time, err = time.Parse(withNanos, t)
+	self.Addr = string(bytes.Trim0(bs[30:]))
 	return self, err
 }
 func (this *Outerid) Marshal() (bs []byte) {
@@ -35,6 +36,6 @@ func (this *Outerid) Marshal() (bs []byte) {
 	return bs
 }
 func (this *Outerid) String() (s string) {
-	s = string(this.Marshal())
+	s = this.Time.String()[:19] + "," + this.Addr
 	return
 }
