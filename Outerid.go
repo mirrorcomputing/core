@@ -28,3 +28,7 @@ func (this *Outerid) Marshal() (bs []byte) {
 	copy(bs[30:], ads)
 	return bs
 }
+func (this *Outerid) String() (s string) {
+	s = string(this.Marshal())
+	return
+}
