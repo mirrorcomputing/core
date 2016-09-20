@@ -23,6 +23,13 @@ type OuterMsg struct {
 	Body    []byte
 }
 
+func (this *OuterMsg) Marshal(bs []byte) {
+	bs = make([]byte, OuteridLen+8+int(this.BodyLen))
+	copy(bs[:OuteridLen], this.Id.Marshal())
+	binary.BigEndian.PutUint64(bs[OuteridLen:OuteridLen+8], this.BodyLen)
+	copy(bs[OuteridLen+8:], this.Body)
+	return bs
+}
 func (this OuterMsg) Unmarshal(reader io.Reader) (msg OuterMsg, err error) {
 	idbs := make([]byte, IdLen)
 	idlen, err := reader.Read(idbs)
