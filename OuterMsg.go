@@ -28,7 +28,7 @@ func (this *OuterMsg) Marshal(bs []byte) {
 	copy(bs[:OuteridLen], this.Id.Marshal())
 	binary.BigEndian.PutUint64(bs[OuteridLen:OuteridLen+8], this.BodyLen)
 	copy(bs[OuteridLen+8:], this.Body)
-	return bs
+	return
 }
 func (this OuterMsg) Unmarshal(reader io.Reader) (msg OuterMsg, err error) {
 	idbs := make([]byte, IdLen)
@@ -56,7 +56,7 @@ func (this OuterMsg) Unmarshal(reader io.Reader) (msg OuterMsg, err error) {
 	if Blen != int(bodylen) || !checkError(err, "body error") {
 		return
 	}
-	msg.BodyLen = int(bodylen)
+	msg.BodyLen = bodylen
 	msg.Body = body
 	return
 }

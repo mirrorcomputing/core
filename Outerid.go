@@ -1,6 +1,8 @@
 package core
 
 import (
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -18,7 +20,9 @@ type Outerid struct {
 }
 
 func (this Outerid) Unmarshal(bs []byte) (self *Outerid, err error) {
-	self.Time, err = time.Parse("2009-11-10 23:00:00", string(bs[:30]))
+	t := strings.TrimSpace(string(bs[:30]))
+	fmt.Println(t)
+	self.Time, err = time.Parse("2009-11-10 23:00:00", t)
 	self.Addr = string(bs[30:])
 	return self, err
 }
