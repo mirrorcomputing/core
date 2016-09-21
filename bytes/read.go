@@ -8,7 +8,7 @@ func Trim0(bs []byte) (r []byte) {
 			if bs[i] == 0 {
 				j++
 				if j == 3 {
-					r = bs[:i-j]
+					r = bs[:i-j+1]
 					return
 				}
 			} else {
