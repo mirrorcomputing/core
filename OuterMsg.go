@@ -24,6 +24,17 @@ type OuterMsg struct {
 	Body    []byte
 }
 
+func (this *OuterMsg)WriteString(s string)(*OuterMsg){
+	this.Body=[]byte(s)
+	this.BodyLen=uint64(len([]byte(s)))
+	return this
+}
+func (this *OuterMsg)Write(bs []byte)(*OuterMsg){
+	this.Body=bs
+	this.BodyLen=uint64(len(bs))
+	return this
+}
+// region 序列化
 func (this *OuterMsg) Marshal() (bs []byte) {
 	bs = make([]byte, OuteridLen*2+8+int(this.BodyLen))
 	copy(bs[:OuteridLen], this.Id.Marshal())
@@ -84,3 +95,4 @@ func (this OuterMsg) Unmarshal(bs []byte) (msg OuterMsg, err error) {
 	//
 	return
 }
+// endregion
