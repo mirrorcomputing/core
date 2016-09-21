@@ -35,7 +35,7 @@ func (this *Outerid) Marshal() (bs []byte) {
 	copy(bs[30:], ads)
 	return bs
 }
-func (this *Outerid) String() (s string) {
-	s = this.Time.String()[:19] + "," + this.Addr
-	return
+func (this Outerid)String() (string) {
+	s:= this.Time.String()[:19] + "," + this.Addr
+	return s
 }

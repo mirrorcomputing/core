@@ -19,13 +19,15 @@ body...
 */
 type OuterMsg struct {
 	Id      Outerid
+	GoId    Outerid
 	BodyLen uint64
 	Body    []byte
 }
 
 func (this *OuterMsg) Marshal() (bs []byte) {
-	bs = make([]byte, OuteridLen+8+int(this.BodyLen))
+	bs = make([]byte, OuteridLen*2+8+int(this.BodyLen))
 	copy(bs[:OuteridLen], this.Id.Marshal())
+	copy(bs[OuteridLen:OuteridLen*2], this.GoId.Marshal())
 	binary.BigEndian.PutUint64(bs[OuteridLen:OuteridLen+8], this.BodyLen)
 	copy(bs[OuteridLen+8:], this.Body)
 	return
@@ -42,7 +44,17 @@ func (this OuterMsg) Read(reader io.Reader) (msg OuterMsg, err error) {
 		return
 	}
 	msg.Id = *Id
+	goidbs := make([]byte, IdLen)
+	goidlen, err := reader.Read(goidbs)
+	if goidlen != IdLen || !checkError(err, "Outerid error") {
+		return
+	}
 
+	GoId, err := (Outerid{}).Unmarshal(goidbs)
+	if !checkError(err, "Outerid error") {
+		return
+	}
+	msg.GoId = *GoId
 	bodylenbs := make([]byte, BodyLenLen)
 	bodylenlen, err := reader.Read(bodylenbs)
 
@@ -62,9 +74,13 @@ func (this OuterMsg) Read(reader io.Reader) (msg OuterMsg, err error) {
 }
 func (this OuterMsg) Unmarshal(bs []byte) (msg OuterMsg, err error) {
 	id := &Outerid{}
+	goid := &Outerid{}
 	id, err = (Outerid{}).Unmarshal(bs[:IdLen])
+	goid, err = (Outerid{}).Unmarshal(bs[IdLen:IdLen*2])
 	msg.Id = *id
+	msg.GoId = *goid
 	msg.BodyLen = binary.BigEndian.Uint64(bs[IdLen : IdLen+BodyLenLen])
 	msg.Body = bs[IdLen+BodyLenLen:]
+	//
 	return
 }
