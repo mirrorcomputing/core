@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"github.com/mirrorcomputing/core/bytes"
 	"time"
 )
@@ -29,7 +28,6 @@ func (this Outerid) Unmarshal(bs []byte) (self *Outerid, err error) {
 	self.Time, err = time.Parse(withNanos, t)
 
 	self.Addr = string(bytes.Trim0(bs[30:]))
-	fmt.Println("outerid", t)
 	return self, err
 }
 func (this *Outerid) Marshal() (bs []byte) {

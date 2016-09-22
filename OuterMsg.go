@@ -2,7 +2,6 @@ package core
 
 import (
 	"encoding/binary"
-	"fmt"
 	"io"
 )
 
@@ -46,46 +45,45 @@ func (this *OuterMsg) Marshal() (bs []byte) {
 	return
 }
 func (this OuterMsg) Read(reader io.Reader) (msg OuterMsg, err error) {
-	fmt.Println("1")
+
 	idbs := make([]byte, IdLen)
 	idlen, err := reader.Read(idbs)
 	if idlen != IdLen || !checkError(err, "Outerid error") {
 		return
 	}
-	fmt.Println("2")
+
 	Id, err := (Outerid{}).Unmarshal(idbs)
 	if !checkError(err, "Outerid error") {
 		return
 	}
-	fmt.Println("3")
+
 	msg.Id = *Id
 	goidbs := make([]byte, IdLen)
 	goidlen, err := reader.Read(goidbs)
 	if goidlen != IdLen || !checkError(err, "Outerid error") {
 		return
 	}
-	fmt.Println("4")
+
 	GoId, err := (Outerid{}).Unmarshal(goidbs)
-	fmt.Println(len(goidbs), GoId)
 	if !checkError(err, "Outerid error") {
 		return
 	}
-	fmt.Println("5")
+
 	msg.GoId = *GoId
 	bodylenbs := make([]byte, BodyLenLen)
 	bodylenlen, err := reader.Read(bodylenbs)
-	fmt.Println("6")
+
 	if bodylenlen != BodyLenLen || !checkError(err, "bodylen error") {
 		return
 	}
-	fmt.Println("7")
+
 	bodylen := binary.BigEndian.Uint64(bodylenbs)
 	body := make([]byte, bodylen)
 	Blen, err := reader.Read(body)
 	if Blen != int(bodylen) || !checkError(err, "body error") {
 		return
 	}
-	fmt.Println("8")
+
 	msg.BodyLen = bodylen
 	msg.Body = body
 	return
